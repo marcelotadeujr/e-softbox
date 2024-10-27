@@ -2,6 +2,9 @@
 
 Se você precisa de uma fonte adicional de luz para suas gravações e não tem uma SoftBox disponivel, use a tela do seu computador/notebook como um SoftBox.
 
+# Acesse
+https://marcelotadeujr.github.io/e-softbox/
+
 Controle iluminação usando dois sliders:
 1. **Intensidade:** Controla o fundo de branco.
 2. **Temperatura de Cor (Kelvin):** Ajuste as tonalidades de branco com base na temperatura de cor, de 3200K (quente/amarelado) a 5600K (frio/azulado).
