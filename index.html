@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Softbox</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: rgb(255, 255, 255);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: background-color 0.2s;
+            font-family: Arial, sans-serif;
+        }
+        .slider-container {
+            margin: 20px 0;
+            width: 80%;
+            max-width: 400px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="range"] {
+            width: 100%;
+        }
+        .value {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h2>E-Softbox</h2>
+    
+    <div class="slider-container">
+        <label for="intensitySlider">Intensidade da Luz:</label>
+        <input type="range" id="intensitySlider" min="0" max="255" value="255">
+        <div class="value" id="intensityValue">255</div>
+    </div>
+
+    <div class="slider-container">
+        <label for="kelvinSlider">Temperatura de Cor:</label>
+        <input type="range" id="kelvinSlider" min="3200" max="5600" value="5600" step="100">
+        <div class="value" id="kelvinValue">5600K</div>
+    </div>
+
+    <script>
+        const intensitySlider = document.getElementById('intensitySlider');
+        const kelvinSlider = document.getElementById('kelvinSlider');
+        const intensityValue = document.getElementById('intensityValue');
+        const kelvinValue = document.getElementById('kelvinValue');
+
+        // Função para converter Kelvin para RGB
+        function kelvinToRGB(kelvin) {
+            let temperature = kelvin / 100;
+            let red, green, blue;
+
+            // Cálculo do vermelho
+            if (temperature <= 66) {
+                red = 255;
+            } else {
+                red = temperature - 60;
+                red = 329.698727446 * Math.pow(red, -0.1332047592);
+                red = Math.min(255, Math.max(0, red));
+            }
+
+            // Cálculo do verde
+            if (temperature <= 66) {
+                green = 99.4708025861 * Math.log(temperature) - 161.1195681661;
+                green = Math.min(255, Math.max(0, green));
+            } else {
+                green = temperature - 60;
+                green = 288.1221695283 * Math.pow(green, -0.0755148492);
+                green = Math.min(255, Math.max(0, green));
+            }
+
+            // Cálculo do azul
+            if (temperature >= 66) {
+                blue = 255;
+            } else {
+                if (temperature <= 19) {
+                    blue = 0;
+                } else {
+                    blue = 138.5177312231 * Math.log(temperature - 10) - 305.0447927307;
+                    blue = Math.min(255, Math.max(0, blue));
+                }
+            }
+
+            return { r: Math.round(red), g: Math.round(green), b: Math.round(blue) };
+        }
+
+        // Função para atualizar a cor de fundo
+        function updateBackgroundColor() {
+            const intensity = parseInt(intensitySlider.value);
+            const kelvin = parseInt(kelvinSlider.value);
+
+            intensityValue.textContent = intensity;
+            kelvinValue.textContent = `${kelvin}K`;
+
+            const kelvinRGB = kelvinToRGB(kelvin);
+
+            // Aplicar a intensidade ajustando cada componente RGB
+            const scaledR = Math.round((kelvinRGB.r * intensity) / 255);
+            const scaledG = Math.round((kelvinRGB.g * intensity) / 255);
+            const scaledB = Math.round((kelvinRGB.b * intensity) / 255);
+
+            document.body.style.backgroundColor = `rgb(${scaledR}, ${scaledG}, ${scaledB})`;
+        }
+
+        // Inicializar com os valores padrão
+        updateBackgroundColor();
+
+        // Adicionar eventos aos sliders
+        intensitySlider.addEventListener('input', updateBackgroundColor);
+        kelvinSlider.addEventListener('input', updateBackgroundColor);
+    </script>
+</body>
+</html>
